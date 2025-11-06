@@ -413,10 +413,7 @@ Iterable<Token> tokenise(String file) sync* {
           continue;
         }
       case .tilde:
-        if (character == '=') {
-          yield SymbolToken(line, column, '~=');
-          state = .base;
-        } else if (character == '/') {
+        if (character == '/') {
           state = .tildeSlash;
         } else {
           yield SymbolToken(line, column, '~');
