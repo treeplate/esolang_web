@@ -17,19 +17,23 @@ class _EditorState extends State<Editor> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        TextField(
-          controller: controller,
-          focusNode: focusNode,
-          style: GoogleFonts.courierPrime(),
-          maxLines: null,
-          onChanged: (value) {
-            setState(() {});
-          },
+    return MaterialApp(
+      home: Scaffold(
+        body: ListView(
+          children: [
+            TextField(
+              controller: controller,
+              focusNode: focusNode,
+              style: GoogleFonts.courierPrime(),
+              maxLines: null,
+              onChanged: (value) {
+                setState(() {});
+              },
+            ),
+            ...tokenise(controller.text).map((e) => Text(e.toString())),
+          ],
         ),
-        ...tokenise(controller.text).map((e) => Text(e.toString())),
-      ],
+      ),
     );
   }
 }
