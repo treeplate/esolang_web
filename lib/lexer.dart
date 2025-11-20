@@ -448,23 +448,39 @@ Iterable<Token> tokenise(String file) sync* {
       yield IntegerToken(line, column, intBuffer);
     case .identifier:
       yield IdentifierToken(line, column, buffer.toString());
-    case .base:
     case .bang:
+      yield SymbolToken(line, column, '!');
     case .percent:
+      yield SymbolToken(line, column, '%');
     case .and:
+      yield SymbolToken(line, column, '&');
     case .andAnd:
+      yield SymbolToken(line, column, '&&');
     case .asterisk:
+      yield SymbolToken(line, column, '*');
     case .plus:
+      yield SymbolToken(line, column, '+');
     case .minus:
+      yield SymbolToken(line, column, '-');
     case .slash:
+      yield SymbolToken(line, column, '/');
     case .lessThan:
+      yield SymbolToken(line, column, '<');
     case .equals:
+      yield SymbolToken(line, column, '=');
     case .greaterThan:
+      yield SymbolToken(line, column, '>');
     case .caret:
+      yield SymbolToken(line, column, '^');
     case .verticalBar:
+      yield SymbolToken(line, column, '|');
     case .verticalBarVerticalBar:
+      yield SymbolToken(line, column, '||');
     case .tilde:
+      yield SymbolToken(line, column, '~');
     case .tildeSlash:
+      yield SymbolToken(line, column, '~/');
+    case .base:
   }
   yield EOFToken(line, column);
 }
