@@ -23,7 +23,7 @@ class IdentifierToken extends Token {
 class StringToken extends Token {
   final String string;
   StringToken(super.line, super.column, this.string);
-  String toString() => 'string $string';
+  String toString() => 'string "$string"';
 }
 
 class IntegerToken extends Token {
@@ -55,9 +55,11 @@ enum LexerState {
   slash,
   number,
   lessThan,
+  lessThanLessThan,
   comment,
   equals,
   greaterThan,
+  greaterThanGreaterThan,
   identifier,
   caret,
   verticalBar,
@@ -328,12 +330,20 @@ Iterable<Token> tokenise(String file) sync* {
           yield SymbolToken(line, column, '<=');
           state = .base;
         } else if (character == '<') {
-          yield SymbolToken(line, column, '<<');
-          state = .base;
+          state = .lessThanLessThan;
         } else if (character == '!') {
           state = .comment;
         } else {
           yield SymbolToken(line, column, '<');
+          state = .base;
+          continue;
+        }
+      case .lessThanLessThan:
+        if (character == '=') {
+          yield SymbolToken(line, column, '<<=');
+          state = .base;
+        } else {
+          yield SymbolToken(line, column, '<<');
           state = .base;
           continue;
         }
@@ -357,10 +367,20 @@ Iterable<Token> tokenise(String file) sync* {
           yield SymbolToken(line, column, '>=');
           state = .base;
         } else if (character == '>') {
-          yield SymbolToken(line, column, '>>');
-          state = .base;
+          state = .greaterThanGreaterThan;
+        } else if (character == '!') {
+          state = .comment;
         } else {
           yield SymbolToken(line, column, '>');
+          state = .base;
+          continue;
+        }
+      case .greaterThanGreaterThan:
+        if (character == '=') {
+          yield SymbolToken(line, column, '>>=');
+          state = .base;
+        } else {
+          yield SymbolToken(line, column, '>>');
           state = .base;
           continue;
         }
@@ -466,10 +486,14 @@ Iterable<Token> tokenise(String file) sync* {
       yield SymbolToken(line, column, '/');
     case .lessThan:
       yield SymbolToken(line, column, '<');
+    case .lessThanLessThan:
+      yield SymbolToken(line, column, '<<');
     case .equals:
       yield SymbolToken(line, column, '=');
     case .greaterThan:
       yield SymbolToken(line, column, '>');
+    case .greaterThanGreaterThan:
+      yield SymbolToken(line, column, '>>');
     case .caret:
       yield SymbolToken(line, column, '^');
     case .verticalBar:
