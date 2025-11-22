@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widget_previews.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:texteditor/lexer.dart';
+
+import 'ast.dart';
+import 'errors.dart';
+import 'parser.dart';
 
 class Editor extends StatefulWidget {
   @Preview()
@@ -17,6 +20,13 @@ class _EditorState extends State<Editor> {
 
   @override
   Widget build(BuildContext context) {
+    List<ParseError> parseErrors = [];
+    Program program;
+    try {
+      program = parseProgram(controller.text, parseErrors);
+    } on UnexpectedEOFException {
+      program = Program(program: []);
+    }
     return MaterialApp(
       home: Scaffold(
         body: ListView(
@@ -30,7 +40,10 @@ class _EditorState extends State<Editor> {
                 setState(() {});
               },
             ),
-            ...tokenise(controller.text).map((e) => Text(e.toString())),
+            Text('AST'),
+            ...program.program.map((e) => Text(e.toString())),
+            Text('ERRORS'),
+            ...parseErrors.map((e) => Text(e.toString())),
           ],
         ),
       ),

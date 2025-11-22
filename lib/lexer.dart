@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:texteditor/errors.dart';
 
 class Token {
   final int line;
@@ -11,29 +12,34 @@ class SymbolToken extends Token {
   final String symbol;
   SymbolToken(super.line, super.column, this.symbol);
 
+  @override
   String toString() => 'symbol $symbol';
 }
 
 class IdentifierToken extends Token {
   final String identifier;
   IdentifierToken(super.line, super.column, this.identifier);
+  @override
   String toString() => 'identifier $identifier';
 }
 
 class StringToken extends Token {
   final String string;
   StringToken(super.line, super.column, this.string);
+  @override
   String toString() => 'string "$string"';
 }
 
 class IntegerToken extends Token {
   final int integer;
   IntegerToken(super.line, super.column, this.integer);
+  @override
   String toString() => 'integer $integer';
 }
 
 class EOFToken extends Token {
   EOFToken(super.line, super.column);
+  @override
   String toString() => 'EOF';
 }
 
@@ -510,3 +516,37 @@ Iterable<Token> tokenise(String file) sync* {
 }
 
 void error(String error, int line, int column) {}
+
+class TokenReader {
+  final Iterator<Token> iterator;
+  final List<ParseError> parseErrors;
+  Token readToken() {
+    var current2 = (iterator..moveNext()).current;
+    print(current2);
+    return current2;
+  }
+
+  String? readSymbol() =>
+      castToken<SymbolToken>(readToken(), 'symbol', parseErrors)?.symbol;
+  String? readIdentifier() =>
+      castToken<IdentifierToken>(readToken(), 'identifier', parseErrors)?.identifier;
+  String? readString() =>
+      castToken<StringToken>(readToken(), 'string', parseErrors)?.string;
+  int? readInteger() =>
+      castToken<IntegerToken>(readToken(), 'integer', parseErrors)?.integer;
+
+  TokenReader(Iterable<Token> iterable, this.parseErrors) : iterator = iterable.iterator;
+}
+
+T? castToken<T extends Token>(final Token token, String expected, List<ParseError> parseErrors) {
+  if (token is T) {
+    return token;
+  } else {
+    parseErrors.add(ParseError(
+      token.line,
+      token.column,
+      'Expected $expected but got $token',
+    ));
+    return null;
+  }
+}

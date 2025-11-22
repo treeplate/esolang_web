@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 void main() {
   int i = 0;
   while (i < 10) {
