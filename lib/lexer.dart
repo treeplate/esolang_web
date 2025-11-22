@@ -521,8 +521,7 @@ class TokenReader {
   final Iterator<Token> iterator;
   final List<ParseError> parseErrors;
   Token readToken() {
-    var current2 = (iterator..moveNext()).current;
-    return current2;
+    return (iterator..moveNext()).current;
   }
 
   String? readSymbol() =>
