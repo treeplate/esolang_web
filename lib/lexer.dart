@@ -522,7 +522,6 @@ class TokenReader {
   final List<ParseError> parseErrors;
   Token readToken() {
     var current2 = (iterator..moveNext()).current;
-    print(current2);
     return current2;
   }
 

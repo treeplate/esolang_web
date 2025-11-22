@@ -10,5 +10,6 @@ class ParseError {
 }
 
 class UnexpectedEOFException implements Exception {
+  @override
   String toString() => 'unexpected EOF exception (should be caught!)';
 }
